@@ -105,7 +105,6 @@ def main(argv: Optional[List[str]] = None) -> int:
                 topic_arn=settings.sns_topic_arn,
                 region=settings.aws_region,
                 message=row.sms_content,
-                debug=args.debug,
             )
             sns_ok = True
             mark_notified(settings.db_path, row_id=row_id, notified_at=datetime.now(timezone.utc))

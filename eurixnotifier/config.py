@@ -5,7 +5,7 @@ from dataclasses import dataclass
 # Only secrets should be provided via environment variables, prefixed with EN_.
 
 # Non-secret config (hard-coded)
-OPENAI_MODEL = "GPT-5.2-Thinking"
+OPENAI_MODEL = "gpt-5.2"
 AWS_REGION = "eu-west-1"
 DB_PATH = "data/eurix-monitor.db"
 

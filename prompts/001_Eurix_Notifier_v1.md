@@ -47,7 +47,7 @@ We will use Just as the build system. Actions:
 
 ## OpenAI prompt
 
-We will use the model GPT-5.2-Thinking, via API.
+We will use the model gpt-5.2, via API.
 
 ```
 Read the HTML below and determine the following: 
