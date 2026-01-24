@@ -6,7 +6,7 @@ env_file := "secrets/eurixnotifier.env"
 
 # Print usage (default).
 default:
-  @echo "EurixNotifyer Justfile"
+  @echo "EurixNotifier Justfile"
   @echo ""
   @echo "Usage:"
   @echo "  just deploy        # copy code to server + run bootstrap"
