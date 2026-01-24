@@ -16,7 +16,7 @@ default:
 
 # Copy files to the server and run bootstrap.sh.
 deploy:
-  ssh {{host}} "mkdir -p {{remote_dir}}"
+  ssh {{host}} "sudo mkdir -p {{remote_dir}} && sudo chown ubuntu:ubuntu {{remote_dir}}"
   scp -r \
     bootstrap.sh \
     run_job.sh \
@@ -25,6 +25,7 @@ deploy:
     eurixnotifier \
     prompts \
     {{host}}:{{remote_dir}}/
+  ssh {{host}} "sudo chmod +x {{remote_dir}}/bootstrap.sh {{remote_dir}}/run_job.sh"
   ssh {{host}} "sudo bash {{remote_dir}}/bootstrap.sh"
 
 # Perform a forced-notify run on the server.

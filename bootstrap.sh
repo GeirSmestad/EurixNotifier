@@ -25,6 +25,11 @@ echo "==> Ensuring app directory ${APP_DIR}"
 mkdir -p "${APP_DIR}"
 chown "${APP_USER}:${APP_USER}" "${APP_DIR}"
 
+echo "==> Ensuring scripts are executable"
+# SCP may not preserve executable bits depending on local filesystem/settings.
+chmod +x "${APP_DIR}/bootstrap.sh" "${APP_DIR}/run_job.sh" 2>/dev/null || true
+chown "${APP_USER}:${APP_USER}" "${APP_DIR}/bootstrap.sh" "${APP_DIR}/run_job.sh" 2>/dev/null || true
+
 echo "==> Ensuring data directory"
 mkdir -p "${APP_DIR}/data"
 chown "${APP_USER}:${APP_USER}" "${APP_DIR}/data"
@@ -39,7 +44,7 @@ run_as_app_user "${APP_DIR}/.venv/bin/pip" install --upgrade pip
 run_as_app_user "${APP_DIR}/.venv/bin/pip" install -r "${APP_DIR}/requirements.txt"
 
 echo "==> Initializing database (no network calls)"
-run_as_app_user "${APP_DIR}/.venv/bin/python" -c "from eurixnotifier.db import ensure_db; ensure_db('${APP_DIR}/data/eurix-monitor.db')"
+run_as_app_user bash -lc "cd '${APP_DIR}' && '${APP_DIR}/.venv/bin/python' -c \"from eurixnotifier.db import ensure_db; ensure_db('${APP_DIR}/data/eurix-monitor.db')\""
 
 echo "==> Installing cron file ${CRON_FILE}"
 # Avoid double-run on Wednesdays: daily entry skips weekday 3 (Wed), and Wed entry forces notify.
