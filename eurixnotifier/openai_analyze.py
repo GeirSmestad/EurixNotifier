@@ -20,7 +20,7 @@ You are responsible for deciding whether to notify the user about festival avail
 
 The user will want to know if *information is available* for a 2027 festival, and also if *registration has been opened* for a 2027 festival.
 
-Regardless of whether you notify or not, you must compose a brief SMS explaining the current situation to the user, focusing on the 2027 edition. The SMS must be in Norwegian.
+Regardless of whether you notify or not, you must compose a brief SMS explaining the current situation to the user, focusing on the 2027 edition. The SMS must be in English and use only symbols from the GSM-7 alphabet.
 
 Return only JSON, as per the following example:
 
@@ -34,9 +34,9 @@ Here is the HTML that you will analyze:
 {html}
 """
 
-SMS_PREFIX = "Dette er en melding fra Eurix-bot 🦾\n\n"
+SMS_PREFIX = "Eurix-bot sier:\n\n"
 SMS_SUFFIX = (
-    "\n\nDu mottar disse meldingene fordi Geir vil holde deg informert, men si ifra til ham hvis du ikke vil ha dem lenger 🤗"
+    "\n\nSi ifra til Geir hvis du ikke vil motta disse meldingene! :)"
 )
 
 
