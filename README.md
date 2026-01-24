@@ -28,6 +28,10 @@ python -m eurixnotifier --no-sns
 ## Configuration (env vars)
 - **OpenAI**:
   - `EN_OPENAI_API_KEY` (required)
+- **AWS (Option B / IAM user keys)**:
+  - `AWS_ACCESS_KEY_ID` (required for SNS publish)
+  - `AWS_SECRET_ACCESS_KEY` (required for SNS publish)
+  - `AWS_DEFAULT_REGION` (optional; the code also sets a region explicitly)
 
 Non-secret settings are hard-coded in `eurixnotifier/config.py` (model, region, db path, SNS topic ARN).
 
@@ -41,6 +45,9 @@ Recommended: create `/srv/eurixnotifier/.env` on the server with at least:
 
 ```bash
 EN_OPENAI_API_KEY=...
+AWS_ACCESS_KEY_ID=...
+AWS_SECRET_ACCESS_KEY=...
+AWS_DEFAULT_REGION=eu-north-1
 ```
 
 ## Just commands

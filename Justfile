@@ -2,6 +2,7 @@ set shell := ["bash", "-eu", "-o", "pipefail", "-c"]
 
 host := "bergenomap"
 remote_dir := "/srv/eurixnotifier"
+env_file := "secrets/eurixnotifier.env"
 
 # Copy files to the server and run bootstrap.sh.
 deploy:
@@ -19,6 +20,14 @@ deploy:
 # Perform a forced-notify run on the server.
 force-notify:
   ssh {{host}} "cd {{remote_dir}} && ./run_job.sh --force-notify"
+
+# Push runtime env vars (secrets) to the server.
+# This is intentionally separate from deploy.
+push-env:
+  test -f {{env_file}}
+  ssh {{host}} "sudo mkdir -p {{remote_dir}} && sudo chown ubuntu:ubuntu {{remote_dir}}"
+  scp {{env_file}} {{host}}:{{remote_dir}}/.env
+  ssh {{host}} "sudo chown ubuntu:ubuntu {{remote_dir}}/.env && sudo chmod 600 {{remote_dir}}/.env"
 
 # Show last 10 DB rows excluding web_html.
 status:
