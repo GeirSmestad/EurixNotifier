@@ -4,6 +4,16 @@ host := "bergenomap"
 remote_dir := "/srv/eurixnotifier"
 env_file := "secrets/eurixnotifier.env"
 
+# Print usage (default).
+default:
+  @echo "EurixNotifyer Justfile"
+  @echo ""
+  @echo "Usage:"
+  @echo "  just deploy        # copy code to server + run bootstrap"
+  @echo "  just push-env      # upload secrets to /srv/eurixnotifier/.env"
+  @echo "  just force-notify  # run job with --force-notify on server"
+  @echo "  just status        # show last 10 DB rows (no web_html)"
+
 # Copy files to the server and run bootstrap.sh.
 deploy:
   ssh {{host}} "mkdir -p {{remote_dir}}"
