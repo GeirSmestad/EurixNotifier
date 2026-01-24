@@ -6,7 +6,7 @@ This app runs as a cron job on a Linux server, and notifies people by SMS if reg
 - Fetches `https://felixruckert.de/2015/10/01/eurix/`
 - Asks OpenAI for JSON (`sms_content`, `should_notify`) about **Eurix 2027**
 - Logs every run to SQLite (`data/eurix-monitor.db`)
-- Sends an SMS via AWS SNS topic when `should_notify=true` (or when forced)
+- Sends SMS via AWS SNS direct publish when `should_notify=true` (or when forced)
 
 ## Local usage
 Install deps:
@@ -28,12 +28,14 @@ python -m eurixnotifier --no-sns
 ## Configuration (env vars)
 - **OpenAI**:
   - `EN_OPENAI_API_KEY` (required)
+- **Recipients**:
+  - `EN_RECIPIENT_PHONE_NUMBERS` (required for sending)
 - **AWS (Option B / IAM user keys)**:
   - `AWS_ACCESS_KEY_ID` (required for SNS publish)
   - `AWS_SECRET_ACCESS_KEY` (required for SNS publish)
   - `AWS_DEFAULT_REGION` (optional; the code also sets a region explicitly)
 
-Non-secret settings are hard-coded in `eurixnotifier/config.py` (model, region, db path, SNS topic ARN).
+Non-secret settings are hard-coded in `eurixnotifier/config.py` (model, region, db path, SMS type).
 
 ## Server deployment
 The app is intended to live at `/srv/eurixnotifier` and be executed by cron.
@@ -45,9 +47,10 @@ Recommended: create `/srv/eurixnotifier/.env` on the server with at least:
 
 ```bash
 EN_OPENAI_API_KEY=...
+EN_RECIPIENT_PHONE_NUMBERS=["+4712345678", "+4787654321"]
 AWS_ACCESS_KEY_ID=...
 AWS_SECRET_ACCESS_KEY=...
-AWS_DEFAULT_REGION=eu-north-1
+AWS_DEFAULT_REGION=eu-west-1
 ```
 
 ## Just commands

@@ -96,22 +96,27 @@ def main(argv: Optional[List[str]] = None) -> int:
     row_id = insert_monitoring_row(settings.db_path, row)
 
     will_notify = args.force_notify or analysis.should_notify
-    sns_message_id: str | None = None
-    sns_ok = False
+    sns_message_ids: dict[str, str] = {}
+    any_sent = False
+    any_failed = False
     if will_notify and not (args.dry_run or args.no_sns):
-        # Settings.from_env() already validates SNS topic ARN and AWS creds when needed.
-        try:
-            sns_message_id = publish_sms(
-                topic_arn=settings.sns_topic_arn,
-                region=settings.aws_region,
-                message=row.sms_content,
-            )
-            sns_ok = True
+        # Settings.from_env() validates AWS creds + recipients when needed.
+        for phone in settings.recipient_phone_numbers:
+            try:
+                msg_id = publish_sms(
+                    phone_number=phone,
+                    region=settings.aws_region,
+                    message=row.sms_content,
+                    sms_type=settings.sns_sms_type,
+                )
+                sns_message_ids[phone] = msg_id
+                any_sent = True
+            except Exception:
+                any_failed = True
+                logger.exception("SNS direct publish failed for %s.", phone)
+
+        if any_sent:
             mark_notified(settings.db_path, row_id=row_id, notified_at=datetime.now(timezone.utc))
-        except Exception:
-            logger.exception("SNS publish failed.")
-            # Keep the DB row, but return non-zero to surface failure in cron.
-            sns_ok = False
 
     # Human-friendly stdout, while keeping logs in DB.
     print(
@@ -122,13 +127,13 @@ def main(argv: Optional[List[str]] = None) -> int:
                 "should_notify": analysis.should_notify,
                 "force_notify": args.force_notify,
                 "will_notify": will_notify,
-                "sns_sent": bool(sns_ok),
-                "sns_message_id": sns_message_id,
+                "sns_sent": bool(any_sent and not any_failed),
+                "sns_message_ids": sns_message_ids,
             },
             ensure_ascii=False,
         )
     )
-    if will_notify and not (args.dry_run or args.no_sns) and not sns_ok:
+    if will_notify and not (args.dry_run or args.no_sns) and (any_failed or not any_sent):
         return 2
     return 0
 

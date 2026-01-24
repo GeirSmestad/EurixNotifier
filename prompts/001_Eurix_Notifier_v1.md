@@ -38,7 +38,7 @@ We will use Just as the build system. Actions:
 - SMS contents:
     - Preface the SMS with "Dette er en melding fra Eurix-bot 🦾\n\n"
     - Insert sms_content from prompt result here
-    - Suffix the SMS with "\n\nDu mottar disse meldingene fordi Geir vil holde deg informert, men si ifra til ham hvis du ikke vil ha dem lenger 🤗"
+    - Suffix the SMS with "\n\nDu mottar disse meldingene fordi Geir vil holde deg informert, men si ifra til ham hvis du ikke vil ha dem lenger 😘"
 
 ## Cron job details
 
