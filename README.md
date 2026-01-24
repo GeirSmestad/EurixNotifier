@@ -1,6 +1,6 @@
 # EurixNotifyer
 
-This app runs as a cron job on a Linux server, and notifies people by SMS if registration for the Eurix festival has been opened.
+This app runs as a cron job on a Linux server, monitors a website with an LLM and notifies people by SMS if registration for the Eurix festival has been opened.
 
 ## What it does
 - Fetches `https://felixruckert.de/2015/10/01/eurix/`
