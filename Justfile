@@ -5,12 +5,15 @@ remote_dir := "/srv/eurixnotifier"
 
 # Copy files to the server and run bootstrap.sh.
 deploy:
-  rsync -av --delete \
-    --exclude ".git/" \
-    --exclude ".venv/" \
-    --exclude "data/" \
-    --exclude ".env" \
-    ./ {{host}}:{{remote_dir}}/
+  ssh {{host}} "mkdir -p {{remote_dir}}"
+  scp -r \
+    bootstrap.sh \
+    run_job.sh \
+    requirements.txt \
+    README.md \
+    eurixnotifier \
+    prompts \
+    {{host}}:{{remote_dir}}/
   ssh {{host}} "sudo bash {{remote_dir}}/bootstrap.sh"
 
 # Perform a forced-notify run on the server.

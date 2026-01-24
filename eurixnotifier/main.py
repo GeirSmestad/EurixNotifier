@@ -83,8 +83,7 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     will_notify = args.force_notify or analysis.should_notify
     if will_notify and not (args.dry_run or args.no_sns):
-        if not settings.sns_topic_arn:
-            raise RuntimeError("SNS_TOPIC_ARN is required unless --dry-run/--no-sns is set.")
+        # Settings.from_env() already validates SNS topic ARN when needed.
         publish_sms(
             topic_arn=settings.sns_topic_arn,
             region=settings.aws_region,

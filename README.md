@@ -27,13 +27,9 @@ python -m eurixnotifier --no-sns
 
 ## Configuration (env vars)
 - **OpenAI**:
-  - `OPENAI_API_KEY` (required)
-  - `OPENAI_MODEL` (optional, defaults to `GPT-5.2-Thinking`)
-- **AWS / SNS**:
-  - `AWS_REGION` (optional, defaults to `eu-north-1`)
-  - `SNS_TOPIC_ARN` (required unless you run with `--no-sns` or `--dry-run`)
-- **DB**:
-  - `EURIX_DB_PATH` (optional, defaults to `data/eurix-monitor.db`)
+  - `EN_OPENAI_API_KEY` (required)
+
+Non-secret settings are hard-coded in `eurixnotifier/config.py` (model, region, db path, SNS topic ARN).
 
 ## Server deployment
 The app is intended to live at `/srv/eurixnotifier` and be executed by cron.
@@ -44,13 +40,10 @@ The app is intended to live at `/srv/eurixnotifier` and be executed by cron.
 Recommended: create `/srv/eurixnotifier/.env` on the server with at least:
 
 ```bash
-OPENAI_API_KEY=...
-SNS_TOPIC_ARN=...
-AWS_REGION=eu-north-1
-EURIX_DB_PATH=/srv/eurixnotifier/data/eurix-monitor.db
+EN_OPENAI_API_KEY=...
 ```
 
 ## Just commands
-- `just deploy`: rsync to server and run bootstrap
+- `just deploy`: scp files to server and run bootstrap
 - `just force-notify`: run a forced notification on the server
 - `just status`: show last 10 DB rows (excluding `web_html`)
