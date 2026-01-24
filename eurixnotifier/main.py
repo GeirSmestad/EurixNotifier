@@ -2,11 +2,13 @@ from __future__ import annotations
 
 import argparse
 import json
+import logging
 import sys
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import List, Optional
 
+logger = logging.getLogger(__name__)
 
 DEFAULT_URL = "https://felixruckert.de/2015/10/01/eurix/"
 
@@ -16,6 +18,7 @@ class CliArgs:
     force_notify: bool
     dry_run: bool
     no_sns: bool
+    debug: bool
     url: str
 
 
@@ -36,12 +39,18 @@ def _parse_args(argv: List[str]) -> CliArgs:
         action="store_true",
         help="Disable SNS publish (still writes DB).",
     )
+    p.add_argument(
+        "--debug",
+        action="store_true",
+        help="Enable debug logging (prints details to stderr / cron log).",
+    )
     p.add_argument("--url", default=DEFAULT_URL, help="Override URL to fetch.")
     ns = p.parse_args(argv)
     return CliArgs(
         force_notify=bool(ns.force_notify),
         dry_run=bool(ns.dry_run),
         no_sns=bool(ns.no_sns),
+        debug=bool(ns.debug),
         url=str(ns.url),
     )
 
@@ -49,6 +58,11 @@ def _parse_args(argv: List[str]) -> CliArgs:
 def main(argv: Optional[List[str]] = None) -> int:
     argv = sys.argv[1:] if argv is None else argv
     args = _parse_args(argv)
+
+    logging.basicConfig(
+        level=logging.DEBUG if args.debug else logging.INFO,
+        format="%(asctime)s %(levelname)s %(name)s %(message)s",
+    )
 
     # Lazy imports so `--help` doesn't require dependencies.
     from eurixnotifier.config import Settings
@@ -82,14 +96,23 @@ def main(argv: Optional[List[str]] = None) -> int:
     row_id = insert_monitoring_row(settings.db_path, row)
 
     will_notify = args.force_notify or analysis.should_notify
+    sns_message_id: str | None = None
+    sns_ok = False
     if will_notify and not (args.dry_run or args.no_sns):
-        # Settings.from_env() already validates SNS topic ARN when needed.
-        publish_sms(
-            topic_arn=settings.sns_topic_arn,
-            region=settings.aws_region,
-            message=row.sms_content,
-        )
-        mark_notified(settings.db_path, row_id=row_id, notified_at=datetime.now(timezone.utc))
+        # Settings.from_env() already validates SNS topic ARN and AWS creds when needed.
+        try:
+            sns_message_id = publish_sms(
+                topic_arn=settings.sns_topic_arn,
+                region=settings.aws_region,
+                message=row.sms_content,
+                debug=args.debug,
+            )
+            sns_ok = True
+            mark_notified(settings.db_path, row_id=row_id, notified_at=datetime.now(timezone.utc))
+        except Exception:
+            logger.exception("SNS publish failed.")
+            # Keep the DB row, but return non-zero to surface failure in cron.
+            sns_ok = False
 
     # Human-friendly stdout, while keeping logs in DB.
     print(
@@ -100,11 +123,14 @@ def main(argv: Optional[List[str]] = None) -> int:
                 "should_notify": analysis.should_notify,
                 "force_notify": args.force_notify,
                 "will_notify": will_notify,
-                "sns_sent": bool(will_notify and not (args.dry_run or args.no_sns)),
+                "sns_sent": bool(sns_ok),
+                "sns_message_id": sns_message_id,
             },
             ensure_ascii=False,
         )
     )
+    if will_notify and not (args.dry_run or args.no_sns) and not sns_ok:
+        return 2
     return 0
 
 

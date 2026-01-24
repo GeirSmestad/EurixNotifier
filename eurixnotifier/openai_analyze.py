@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import json
+import logging
 from dataclasses import dataclass
 from datetime import date
 
+logger = logging.getLogger(__name__)
 
 PROMPT_TEMPLATE = """Read the HTML below and determine the following: 
 
@@ -99,6 +101,7 @@ def _call_openai_text(*, api_key: str, model: str, prompt: str) -> str:
 def analyze_html_for_sms(*, html: str, today: date, model: str, api_key: str) -> AnalysisResult:
     prompt = PROMPT_TEMPLATE.format(current_date=today.isoformat(), html=html)
 
+    raw: str | None = None
     try:
         raw = _call_openai_text(api_key=api_key, model=model, prompt=prompt)
         obj = _extract_json_object(raw)
@@ -110,11 +113,15 @@ def analyze_html_for_sms(*, html: str, today: date, model: str, api_key: str) ->
             raise ValueError("should_notify was not a bool")
         return AnalysisResult(sms_content=_wrap_sms(sms_content), should_notify=should_notify)
     except Exception as e:
+        # Log full exception for debugging (will show in cron log via stderr redirection).
+        if raw:
+            logger.error("OpenAI raw response (truncated): %s", raw[:2000])
+        logger.exception("OpenAI analysis failed: %s", e)
+
         # Fallback that still logs a useful message in Norwegian.
         fallback = (
             "Jeg klarte ikke å tolke nettsiden automatisk denne gangen, så jeg kan ikke si sikkert om Eurix 2027 er annonsert "
             "eller om påmelding er åpnet. Be Geir om å kikke på loggen."
         )
-        _ = e  # keep variable for debugging if expanded later
         return AnalysisResult(sms_content=_wrap_sms(fallback), should_notify=False)
 
