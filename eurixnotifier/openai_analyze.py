@@ -20,7 +20,7 @@ You are responsible for deciding whether to notify the user about festival avail
 
 The user will want to know if *information is available* for a 2027 festival, and also if *registration has been opened* for a 2027 festival.
 
-Regardless of whether you notify or not, you must compose a brief SMS explaining the current situation to the user, focusing on the 2027 edition. The SMS must be in English and use only symbols from the GSM-7 alphabet.
+Regardless of whether you notify or not, you must compose a brief SMS explaining the current situation to the user. Lead with the status regarding any 2027 edition of the festival (whether it is mentioned yet or not). The SMS must be in English and use only symbols from the GSM-7 alphabet.
 
 Return only JSON, as per the following example:
 
