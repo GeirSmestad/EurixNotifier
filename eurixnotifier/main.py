@@ -108,6 +108,7 @@ def main(argv: Optional[List[str]] = None) -> int:
                     region=settings.aws_region,
                     message=row.sms_content,
                     sms_type=settings.sns_sms_type,
+                    sender_id=settings.sns_sender_id,
                 )
                 sns_message_ids[phone] = msg_id
                 any_sent = True

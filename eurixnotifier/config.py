@@ -15,6 +15,10 @@ DB_PATH = "data/eurix-monitor.db"
 # Transactional is semantically correct for this notifier.
 SNS_SMS_TYPE = "Transactional"
 
+# AWS SNS SMS Sender ID (alphanumeric "from" field) for countries/carriers that support it.
+# Note: Some destinations ignore this and will show a long code or phone number instead.
+SNS_SENDER_ID = "GSmestad"
+
 RECIPIENT_PHONE_NUMBERS_ENV = "EN_RECIPIENT_PHONE_NUMBERS"
 
 
@@ -70,6 +74,7 @@ class Settings:
     openai_model: str
     aws_region: str
     sns_sms_type: str
+    sns_sender_id: str
     recipient_phone_numbers: List[str]
     db_path: str
 
@@ -103,6 +108,7 @@ class Settings:
             openai_model=OPENAI_MODEL,
             aws_region=AWS_REGION,
             sns_sms_type=SNS_SMS_TYPE,
+            sns_sender_id=SNS_SENDER_ID,
             recipient_phone_numbers=recipients,
             db_path=DB_PATH,
         )

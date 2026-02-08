@@ -2,6 +2,10 @@
 
 This app runs as a cron job on a Linux server, monitors a website with an LLM and notifies people by SMS if registration for the Eurix festival has been opened.
 
+## TODO
+
+- [x] Test that detection succeeds by simulating a published 2027 event on a local server (tested OK by random chance; 2027 just appeared in prod)
+
 ## What it does
 - Fetches `https://felixruckert.de/2015/10/01/eurix/`
 - Asks OpenAI for JSON (`sms_content`, `should_notify`) about **Eurix 2027**
