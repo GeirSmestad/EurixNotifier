@@ -18,7 +18,7 @@ The page describes which editions of the festival are currently open for registr
 
 You are responsible for deciding whether to notify the user about festival availability.
 
-Notify if you conclude that registration for the *2027* edition of this festival has been opened. Do not notify otherwise.
+Notify if you conclude that registration for any *2027* edition of this festival has been opened. Do not notify otherwise.
 
 Regardless of whether you notify or not, you must compose a brief SMS explaining the current situation to the user. Lead with the status regarding any 2027 edition of the festival (whether it is mentioned yet or not). The SMS must be in English and use only symbols from the GSM-7 alphabet.
 
