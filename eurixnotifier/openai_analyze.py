@@ -16,9 +16,9 @@ It is {current_date} today.
 
 The page describes which editions of the festival are currently open for registration, as well as information about previous festivals. (We are not interested in the previous festivals, and we are also not interested in any *2026* festival).
 
-You are responsible for deciding whether to notify the user about festival availability. Notify if this web page has information about any *2027* edition of this festival. It is normally arranged in spring and autumn.
+You are responsible for deciding whether to notify the user about festival availability.
 
-The user will want to know if *information is available* for a 2027 festival, and also if *registration has been opened* for a 2027 festival.
+Notify if you conclude that registration for the *2027* edition of this festival has been opened. Do not notify otherwise.
 
 Regardless of whether you notify or not, you must compose a brief SMS explaining the current situation to the user. Lead with the status regarding any 2027 edition of the festival (whether it is mentioned yet or not). The SMS must be in English and use only symbols from the GSM-7 alphabet.
 
@@ -36,7 +36,7 @@ Here is the HTML that you will analyze:
 
 SMS_PREFIX = "Eurix-bot sier:\n\n"
 SMS_SUFFIX = (
-    "\n\nSi ifra til Geir hvis du ikke vil motta disse meldingene! :)"
+    "\n\nHvis du ikke vil motta disse meldingene, gi beskjed til geir.smestad@gmail.com"
 )
 
 
